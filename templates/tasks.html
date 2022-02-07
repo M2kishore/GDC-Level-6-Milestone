@@ -1,0 +1,23 @@
+<h1>Add Task</h1>
+<form action="/add-task" method="get">
+    <input type="text" name="task" />
+    <button type="submit">Add Task</button>
+</form>
+
+<h2>Search Task</h2>
+<form action="" method="get">
+    <input type="text" name="search" />
+    <button type="submit">Search</button>
+</form>
+
+<h1>Tasks</h1>
+{% for task in tasks%}
+{{forloop.counter}}
+{{task}} <a href="/delete-task/{{task.id}}">remove</a>  <a href="/update-task/{{task.id}}">update</a> <a href="/detail-task/{{task.id}}">details</a><br />
+{% endfor %}
+<br>
+{% for page in paginator.page_range %}
+<li>
+    <a href="?page={{page}}&search={{request.GET.search}}">{{page}}</a>
+</li>
+{% endfor %}

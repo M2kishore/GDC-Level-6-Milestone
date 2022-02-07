@@ -1,0 +1,61 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<section class="text-gray-600 body-font relative">
+  <div class="container px-12 py-24 mx-auto lg:px-60 xl:px-80 2xl:px-96">
+    <h1
+      class="sm:text-4xl text-2xl font-medium title-font mb-4 text-gray-900 text-center"
+    >
+      Todo Manager
+    </h1>
+    <h1 class="sm:text-3xl text-2xl title-font mb-4 text-gray-900">Signup</h1>
+    <form action="" method="post">
+      <div class="fieldWrapper">
+        {{ form.username.errors }}
+        <label for="{{ form.username.id_for_label }}">Username</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.username }}
+        </div>
+      </div>
+      <p class="text-gray-500">
+        Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only
+      </p>
+      <div class="fieldWrapper">
+        {{ form.password1.errors }}
+        <label for="{{ form.password.id_for_label }}">Password</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.password1 }}
+        </div>
+        <p class="text-gray-500">
+          <ul class="text-gray-500">
+            <li class="list-disc">Your password can’t be too similar to your other personal information.</li>
+            <li class="list-disc">Your password must contain at least 8 characters.</li>
+            <li class="list-disc">Your password can’t be a commonly used password.</li>
+            <li class="list-disc">Your password can’t be entirely numeric.</li>
+          </ul>
+        </p>
+      </div>
+      <div class="fieldWrapper">
+        {{ form.password2.errors }}
+        <label for="{{ form.password.id_for_label }}">Retype Password</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.password2 }}
+        </div>
+      <br />{% csrf_token %}
+      <button
+        class="text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded text-lg w-full"
+        type="submit"
+      >
+        Signup
+      </button>
+    </form>
+  </div>
+</section>
+<form action="/your-name/" method="post">
+  {% csrf_token %} {{ form }}
+  <input type="submit" value="Submit" />
+</form>
