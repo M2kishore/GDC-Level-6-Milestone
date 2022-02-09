@@ -1,5 +1,51 @@
-<form action="/create-task/" method="post">
-    {{form.as_p}}
-    {% csrf_token %}
-    <button type="submit">Add Task</button>
-</form>
+<script src="https://cdn.tailwindcss.com"></script>
+<section class="text-gray-600 body-font relative">
+  <div class="container px-12 py-24 mx-auto lg:px-60 xl:px-80 2xl:px-96">
+    <h1
+      class="sm:text-4xl text-2xl font-medium title-font mb-4 text-gray-900 text-center"
+    >
+      Todo Manager
+    </h1>
+    <form action="/create-task/" method="post">
+      <div class="fieldWrapper">
+        <div class="text-red-700">{{ form.title.errors }}</div>
+        <label for="{{ form.title.id_for_label }}">Title</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.title }}
+        </div>
+      </div>
+      <div class="fieldWrapper">
+        <div class="text-red-700">{{ form.priority.errors }}</div>
+        <label for="{{ form.priority.id_for_label }}">Priority</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.priority }}
+        </div>
+      </div>
+      <div class="fieldWrapper">
+        <div class="text-red-700">{{ form.description.errors }}</div>
+        <label for="{{ form.priority.id_for_label }}">Description</label><br />
+        <div
+          class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+        >
+          {{ form.description }}
+        </div>
+      </div>
+      <div class="fieldWrapper">
+        <div class="text-red-700">{{ form.completed.errors }}</div>
+        <label for="{{ form.completed.id_for_label }}">Completed</label>
+        {{ form.completed }}
+      </div>
+      {% csrf_token %}
+      <button
+        class="text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded text-lg w-full"
+        type="submit"
+      >
+        Add Task
+      </button>
+    </form>
+  </div>
+</section>

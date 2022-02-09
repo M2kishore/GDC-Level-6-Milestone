@@ -67,9 +67,15 @@ class TaskCreateForm(ModelForm):
             raise ValidationError("The data is too small")
         return title
 
+    def clean_priority(self):
+        priority = self.cleaned_data["priority"]
+        if priority <= 0:
+            raise ValidationError("Invalid Priority")
+        return priority
+
     class Meta:
         model = Task
-        fields = ("title", "description", "completed")
+        fields = ("title", "priority", "description", "completed")
 
 
 class GenericTaskUpdateView(UpdateView):

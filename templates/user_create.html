@@ -9,7 +9,7 @@
     <h1 class="sm:text-3xl text-2xl title-font mb-4 text-gray-900">Signup</h1>
     <form action="" method="post">
       <div class="fieldWrapper">
-        {{ form.username.errors }}
+        <div class="text-red-700">{{ form.username.errors }}</div>
         <label for="{{ form.username.id_for_label }}">Username</label><br />
         <div
           class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -21,8 +21,8 @@
         Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only
       </p>
       <div class="fieldWrapper">
-        {{ form.password1.errors }}
-        <label for="{{ form.password.id_for_label }}">Password</label><br />
+        <div class="text-red-700">{{ form.password1.errors }}</div>
+        <label for="{{ form.password1.id_for_label }}">Password</label><br />
         <div
           class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
         >
@@ -38,8 +38,8 @@
         </p>
       </div>
       <div class="fieldWrapper">
-        {{ form.password2.errors }}
-        <label for="{{ form.password.id_for_label }}">Retype Password</label><br />
+        <div class="text-red-700">{{ form.password2.errors }}<div>
+        <label for="{{ form.password2.id_for_label }}">Retype Password</label><br />
         <div
           class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
         >
@@ -55,7 +55,3 @@
     </form>
   </div>
 </section>
-<form action="/your-name/" method="post">
-  {% csrf_token %} {{ form }}
-  <input type="submit" value="Submit" />
-</form>
