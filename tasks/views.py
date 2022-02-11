@@ -66,7 +66,6 @@ class TaskCreateForm(ModelForm):
             raise ValidationError("The data is too small")
         return title
 
-    # ! check
     def clean_priority(self):
         priority = self.cleaned_data["priority"]
         if priority <= 0:
@@ -140,6 +139,20 @@ class GenericTaskCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+class GenericCompletedTaskView(LoginRequiredMixin, ListView):
+    template_name = "tasks.html"
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        tasks = Task.objects.filter(
+            deleted=False, completed=True, user=self.request.user
+        ).order_by("priority")
+        search_string = self.request.GET.get("search")
+        if search_string:
+            tasks = tasks.filter(title__icontains=search_string)
+        return tasks
+
+
 class GenericTaskView(LoginRequiredMixin, ListView):
     # queryset = Task.objects.filter(deleted=False)
     template_name = "tasks.html"
@@ -148,9 +161,9 @@ class GenericTaskView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         print(self.request.user)
-        tasks = Task.objects.filter(deleted=False, user=self.request.user).order_by(
-            "priority"
-        )
+        tasks = Task.objects.filter(
+            deleted=False, user=self.request.user, completed=False
+        ).order_by("priority")
         search_string = self.request.GET.get("search")
         if search_string:
             tasks = tasks.filter(title__icontains=search_string)

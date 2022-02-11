@@ -58,7 +58,8 @@
       </div>
     </div>
     {{task.created_date}}
-    {% endfor %}
+    {% endfor %}<br/>
+    <a href="/completed-tasks/"><button class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center">Completed Tasks</button></a>
   </section>
     {% comment %} <br />
     {% for page in paginator.page_range %}
