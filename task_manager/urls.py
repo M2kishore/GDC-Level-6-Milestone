@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tasks.views import (
-    CreateTaskView,
+    # CreateTaskView,
     GenericTaskDetailView,
     GenericTaskUpdateView,
     GenericTaskView,
@@ -26,7 +26,7 @@ from tasks.views import (
     session_storage_view,
     UserCreateView,
     UserLoginView,
-    TaskView,
+    # TaskView,
 )
 
 from django.contrib.auth.views import LogoutView

@@ -90,27 +90,13 @@ class GenericTaskUpdateView(UpdateView):
         self.object = form.save()
         priority = self.object.priority
         user = self.request.user
-        bulk_object = []
-        if priority <= 0:
-            raise ValidationError("Invalid Priority")
-
-        overlap_task = Task.objects.filter(
-            priority=priority, user=user, deleted=False
-        ).first()
-        print(overlap_task)
-        while overlap_task is not None:
-            overlap_task.priority += 1
-            bulk_object.append(overlap_task)
-            overlap_task = Task.objects.filter(
-                priority=overlap_task.priority, user=user, deleted=False
-            ).first()
-        Task.objects.bulk_update(bulk_object, ["priority"])
+        handle_duplicates(user, priority)
         self.object.user = user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
-class GenericTaskCreateView(CreateView):
+class GenericTaskCreateView(LoginRequiredMixin, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
     success_url = "/tasks"
@@ -119,21 +105,7 @@ class GenericTaskCreateView(CreateView):
         self.object = form.save()
         priority = self.object.priority
         user = self.request.user
-        bulk_object = []
-        if priority <= 0:
-            raise ValidationError("Invalid Priority")
-
-        overlap_task = Task.objects.filter(
-            priority=priority, user=user, deleted=False
-        ).first()
-        print(f"{overlap_task} is overlapping")
-        while overlap_task is not None:
-            overlap_task.priority += 1
-            bulk_object.append(overlap_task)
-            overlap_task = Task.objects.filter(
-                priority=overlap_task.priority, user=user, deleted=False
-            ).first()
-        Task.objects.bulk_update(bulk_object, ["priority"])
+        handle_duplicates(user, priority)
         self.object.user = user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
@@ -170,21 +142,39 @@ class GenericTaskView(LoginRequiredMixin, ListView):
         return tasks
 
 
-class CreateTaskView(View):
-    def get(self, request):
-        return render(request, "task_create.html")
+# helper functions
+def handle_duplicates(user, priority):
+    bulk_object = []
+    overlap_task = (
+        Task.objects.filter(deleted=False, completed=False)
+        .filter(priority=priority, user=user, deleted=False)
+        .first()
+    )
+    print(f"{overlap_task} is overlapping")
+    while overlap_task is not None:
+        overlap_task.priority += 1
+        bulk_object.append(overlap_task)
+        overlap_task = Task.objects.filter(
+            priority=overlap_task.priority, user=user, deleted=False
+        ).first()
+    Task.objects.bulk_update(bulk_object, ["priority"])
 
-    def post(self, request):
-        task_string = request.POST.get("task")
-        task_obj = Task(title=task_string)
-        task_obj.save()
-        return HttpResponseRedirect("/tasks")
+
+# class CreateTaskView(View):
+#     def get(self, request):
+#         return render(request, "task_create.html")
+
+#     def post(self, request):
+#         task_string = request.POST.get("task")
+#         task_obj = Task(title=task_string)
+#         task_obj.save()
+#         return HttpResponseRedirect("/tasks")
 
 
-class TaskView(View):
-    def get(self, request):
-        tasks = Task.objects.filter(deleted=False)
-        search_string = request.GET.get("search")
-        if search_string:
-            tasks = tasks.filter(title__icontains=search_string)
-        return render(request, "tasks.html", {"tasks": tasks})
+# class TaskView(View):
+#     def get(self, request):
+#         tasks = Task.objects.filter(deleted=False)
+#         search_string = request.GET.get("search")
+#         if search_string:
+#             tasks = tasks.filter(title__icontains=search_string)
+#         return render(request, "tasks.html", {"tasks": tasks})
