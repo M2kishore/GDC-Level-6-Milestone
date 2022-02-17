@@ -3,7 +3,7 @@ from re import template
 
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm
+from django.forms import ModelForm, NullBooleanField
 
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
@@ -116,13 +116,25 @@ class GenericCompletedTaskView(LoginRequiredMixin, ListView):
     context_object_name = "tasks"
 
     def get_queryset(self):
-        tasks = Task.objects.filter(
-            deleted=False, completed=True, user=self.request.user
-        ).order_by("priority")
-        search_string = self.request.GET.get("search")
-        if search_string:
-            tasks = tasks.filter(title__icontains=search_string)
-        return tasks
+        return getTasks(
+            deleted=False,
+            completed=True,
+            user=self.request.user,
+            search_string=self.request.GET.get("search"),
+        )
+
+
+class GenericPendingTaskView(LoginRequiredMixin, ListView):
+    template_name = "tasks.html"
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        return getTasks(
+            deleted=False,
+            completed=False,
+            user=self.request.user,
+            search_string=self.request.GET.get("search"),
+        )
 
 
 class GenericTaskView(LoginRequiredMixin, ListView):
@@ -132,14 +144,7 @@ class GenericTaskView(LoginRequiredMixin, ListView):
     # paginate_by = 5
 
     def get_queryset(self):
-        print(self.request.user)
-        tasks = Task.objects.filter(
-            deleted=False, user=self.request.user, completed=False
-        ).order_by("priority")
-        search_string = self.request.GET.get("search")
-        if search_string:
-            tasks = tasks.filter(title__icontains=search_string)
-        return tasks
+        return getTasks(deleted=False, user=self.request.user)
 
 
 # helper functions
@@ -158,6 +163,15 @@ def handle_duplicates(user, priority):
             priority=overlap_task.priority, user=user, deleted=False
         ).first()
     Task.objects.bulk_update(bulk_object, ["priority"])
+
+
+def getTasks(deleted, user, completed=False, search_string=""):
+    tasks = Task.objects.filter(
+        deleted=deleted, completed=completed, user=user
+    ).order_by("priority")
+    if search_string:
+        tasks = tasks.filter(title__icontains=search_string)
+    return tasks
 
 
 # class CreateTaskView(View):

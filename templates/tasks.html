@@ -11,14 +11,52 @@
       <input type="text" name="search" class="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
       <button class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center" type="submit">Search</button>
     </form>
-    <a href="/create-task/"><button class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center">Create Task</button></a>
+    <a href="/create-task/"><button class="py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+      Create
+    </button></a>
+    {% if request.path == '/tasks/' %}
+    <button class="bg-pink-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+      All
+    </button>
+    {%else%}
+    <a href="/tasks/">
+      <button class="py-2 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
+        All
+      </button>
+    </a>
+    {%endif%}
+    {% if request.path == '/completed-tasks/' %}
+    <button class="bg-pink-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+      Completed
+    </button>
+    {%else%}
+    <a href="/completed-tasks/">
+      <button class="py-2 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
+        Completed
+      </button>
+    </a>
+    {%endif%}
+    {% if request.path == '/pending-tasks/' %}
+    <button class="bg-pink-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+      Pending
+    </button>
+    {%else%}
+    <a href="/pending-tasks/">
+      <button class="py-2 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
+        Pending
+      </button>
+    </a>
+    {%endif%}
+
+
+    
     <h1>Tasks</h1>
     {% for task in tasks %}
     <div
-      class="container px-1 py-5 mx-auto flex flex-wrap items-center bg-gray-100"
+      class="container px-1 py-5 m-5 p-10 mx-auto rounded items-center bg-gray-100"
     >
       {{forloop.counter}} {{task}} [{{task.priority}}]
-      <div class="">
+      <div class="buttons float-right">
         <a href="/update-task/{{task.id}}">
           <button
             class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center"
@@ -55,11 +93,10 @@
             </svg>
           </button>
         </a>
-      </div>
+      </div><br>
+      {{task.created_date}}
     </div>
-    {{task.created_date}}
     {% endfor %}<br/>
-    <a href="/completed-tasks/"><button class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center">Completed Tasks</button></a>
   </section>
     {% comment %} <br />
     {% for page in paginator.page_range %}
