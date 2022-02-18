@@ -90,8 +90,8 @@ class GenericTaskUpdateView(UpdateView):
         self.object = form.save()
         priority = self.object.priority
         user = self.request.user
-        handle_duplicates(user, priority)
-        self.object.user = user
+        id = self.object.id
+        handle_duplicates(user, priority, id)
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -148,19 +148,27 @@ class GenericTaskView(LoginRequiredMixin, ListView):
 
 
 # helper functions
-def handle_duplicates(user, priority):
+def handle_duplicates(user, priority, id=-1):
     bulk_object = []
-    overlap_task = (
-        Task.objects.filter(deleted=False, completed=False)
-        .filter(priority=priority, user=user, deleted=False)
-        .first()
-    )
-    print(f"{overlap_task} is overlapping")
+    overlap_task = Task.objects.filter(
+        priority=priority, user=user, deleted=False, completed=False
+    ).first()
+
+    # if update happens and priority is not changed
+    if overlap_task is not None:
+
+        if (
+            overlap_task.id == id
+            and overlap_task.priority == priority
+            and overlap_task.user == user
+        ):
+            return
+
     while overlap_task is not None:
         overlap_task.priority += 1
         bulk_object.append(overlap_task)
         overlap_task = Task.objects.filter(
-            priority=overlap_task.priority, user=user, deleted=False
+            priority=overlap_task.priority, user=user, deleted=False, completed=False
         ).first()
     Task.objects.bulk_update(bulk_object, ["priority"])
 
