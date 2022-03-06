@@ -16,7 +16,7 @@ from django.contrib.auth.views import LoginView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from tasks.models import Task
+from tasks.models import Report, Task
 
 
 class AuthorizedTaskManager(LoginRequiredMixin):
@@ -36,6 +36,11 @@ class UserCreateView(CreateView):
     form_class = UserCreationForm
     template_name = "user_create.html"
     success_url = "/user/login"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        Report.objects.create(user=self.object)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 def session_storage_view(request):
@@ -75,6 +80,14 @@ class TaskCreateForm(ModelForm):
     class Meta:
         model = Task
         fields = ("title", "priority", "description", "completed")
+
+
+class ReportForm(ModelForm):
+    class Meta:
+        model = Report
+        fields = [
+            "report_time",
+        ]
 
 
 class GenericTaskUpdateView(UpdateView):
@@ -145,6 +158,22 @@ class GenericTaskView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return getTasks(deleted=False, user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(GenericTaskView, self).get_context_data(**kwargs)
+        context.update(
+            {
+                "report_id": Report.objects.get(user=self.request.user).pk,
+            }
+        )
+        return context
+
+
+class GenericReportView(UpdateView):
+    queryset = Report.objects.all()
+    form_class = ReportForm
+    success_url = "/tasks"
+    template_name = "report.html"
 
 
 # helper functions

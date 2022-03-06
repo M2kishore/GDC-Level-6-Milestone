@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 from django.contrib.auth.models import User
 
 
@@ -14,3 +14,9 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Report(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    report_time = models.TimeField(default=datetime.time(9, 00))
+    report_date = models.DateField(default=datetime.date.today, null=True)

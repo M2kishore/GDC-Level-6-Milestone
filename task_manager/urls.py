@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth.views import LogoutView
 from tasks.views import (
     # CreateTaskView,
     GenericTaskDetailView,
@@ -24,13 +25,13 @@ from tasks.views import (
     GenericPendingTaskView,
     GenericTaskCreateView,
     GenericTaskDeleteView,
+    GenericReportView,
     session_storage_view,
     UserCreateView,
     UserLoginView,
     # TaskView,
 )
 
-from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -38,6 +39,7 @@ urlpatterns = [
     path("completed-tasks/", GenericCompletedTaskView.as_view()),
     path("pending-tasks/", GenericPendingTaskView.as_view()),
     path("create-task/", GenericTaskCreateView.as_view()),
+    path("report/<pk>", GenericReportView.as_view()),
     path("update-task/<pk>", GenericTaskUpdateView.as_view()),
     path("detail-task/<pk>", GenericTaskDetailView.as_view()),
     path("delete-task/<pk>", GenericTaskDeleteView.as_view()),
